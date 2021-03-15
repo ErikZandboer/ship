@@ -13,8 +13,8 @@
 
 // Define the physical pinout
 #define GREENLIGHTS   26 
-#define SERVOX		  20
-#define SERVOY        21
+#define SERVOX        15
+#define SERVOY        16
 
 // Define the servos
 Servo servoX;
