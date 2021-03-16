@@ -14,12 +14,12 @@
 #include <Servo.h>
 
 // Define the physical pinout
-#define GREENLIGHTS   26 
 #define SERVOX        15
 #define SERVOY        16
-#define RADAR         25
-#define MP3_RX        23
 #define MP3_TX        22   // connect to RX of the MP3 player module
+#define MP3_RX        23
+#define GREENLIGHTS   27 
+#define RADAR         28
 
 // Define the servos
 Servo servoX;
