@@ -31,8 +31,14 @@ MP3 mp3(MP3_RX, MP3_TX);
 // Get some base counters in for the runtime in seconds.
 unsigned int    TickCounter=0;
 
-#define RUN_FREQ 100
+#define servoXmin 45
+#define servoXmax 135
+#define servoYmin 45
+#define servoYmax 135
 
+
+
+#define RUN_FREQ 100
 // Timings and things to change
 #define TIM_SAMPLESTART       20*RUN_FREQ        // 5 seconds
 #define TIM_SAMPLELENGTH      15*RUN_FREQ       // 61 seconds
@@ -41,6 +47,7 @@ unsigned int    TickCounter=0;
 #define TIM_GREEN_ON         20*RUN_FREQ
 #define TIM_GREEN_OFF        40*RUN_FREQ
 #define TIM_SERVOS_ON        26*RUN_FREQ
+#define TIM_SERVOS_OFF       40*RUN_FREQ
 
 #define TIM_REPEAT            90*RUN_FREQ       // Rewind at 90 seconds (max. value is 655535 = 327 seconds = a little over 5 minutes)
 
@@ -61,7 +68,10 @@ void setup()
    // Center the servos
    servoX.write(90);
    servoY.write(90);
-    
+
+   // Get a random seeding by reading analog pin 0 (leave disconnected!)
+   randomSeed(analogRead(0));
+   
    TickCounter=0;
 }
 
@@ -77,19 +87,17 @@ void loop()
    TickCounter++;
    if (TickCounter > TIM_REPEAT)       
    {
-       TickCounter = 0;   // Counts up to a single second, then increase the RunTime
+       TickCounter = 0;   // Reset the tick counter when we need to restart the animatronics
    }
   
    // Time the AUDIO
    if (TickCounter == TIM_SAMPLESTART)
    {
       mp3.playWithVolume(1,26);  // Play the first mp3 on the card at volume 26 (max is 30)
-      
    }        
    if (TickCounter == TIM_SAMPLESTART+TIM_SAMPLELENGTH)
    {
        mp3.stopPlay(); // Stop playing after the show is over
-       digitalWrite(RADAR, LOW); // Sample stops? Then headlights switch OFF
    }
 
    if (TickCounter == TIM_RADAR_ON)
@@ -109,27 +117,14 @@ void loop()
       digitalWrite(GREENLIGHTS, LOW); // Green leds switch OFF
    } 
   
-   // Just a test for the servos every second
-   if (TickCounter == TIM_SERVOS_ON+100)
+   // Within this timeframe the servo's are allowed to move each second. X moves on the second, Y moves on every half-a-second
+   if ( (TickCounter >= TIM_SERVOS_ON) && (TickCounter <= TIM_SERVOS_OFF) && ((TickCounter %100) ==0) )
    {
-      servoX.write(45);
+      servoX.write((unsigned char)random(servoXmin,servoXmax));
    }
-   if (TickCounter == TIM_SERVOS_ON+300)
+   if ( (TickCounter >= TIM_SERVOS_ON) && (TickCounter <= TIM_SERVOS_OFF) && ((TickCounter %100) ==50) )
    {
-      servoY.write(45);
-   }
-   if (TickCounter == TIM_SERVOS_ON+500)
-   {
-      servoX.write(135);
-   }
-   if (TickCounter == TIM_SERVOS_ON+700)
-   {
-      servoY.write(135);
-   }
-   if (TickCounter == TIM_SERVOS_ON+900)
-   {
-      servoX.write(90);
-      servoY.write(90);
+      servoY.write((unsigned char)random(servoYmin,servoYmax));
    }
 
    delay(1); // Added this dummy delay() to make sure the code takes more than 1 ms to execute.
