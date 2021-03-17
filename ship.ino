@@ -34,8 +34,13 @@ unsigned int    TickCounter=0;
 #define RUN_FREQ 100
 
 // Timings and things to change
-#define TIM_SAMPLESTART       5*RUN_FREQ        // 5 seconds
-#define TIM_SAMPLELENGTH      61*RUN_FREQ       // 61 seconds
+#define TIM_SAMPLESTART       20*RUN_FREQ        // 5 seconds
+#define TIM_SAMPLELENGTH      15*RUN_FREQ       // 61 seconds
+#define TIM_RADAR_ON          1*RUN_FREQ
+#define TIM_RADAR_OFF        89*RUN_FREQ
+#define TIM_GREEN_ON         20*RUN_FREQ
+#define TIM_GREEN_OFF        40*RUN_FREQ
+#define TIM_SERVOS_ON        26*RUN_FREQ
 
 #define TIM_REPEAT            90*RUN_FREQ       // Rewind at 90 seconds (max. value is 655535 = 327 seconds = a little over 5 minutes)
 
@@ -43,8 +48,8 @@ unsigned int    TickCounter=0;
 void setup()
 {
    digitalWrite(GREENLIGHTS, LOW);     // GREEN lights start OFF
-   digitalWrite(RADAR, LOW);		// Radar starts OFF   
-	
+   digitalWrite(RADAR, LOW);    // Radar starts OFF   
+  
    // All led groups as OUTPUT
    pinMode (GREENLIGHTS, OUTPUT);
    pinMode (RADAR, OUTPUT);
@@ -52,11 +57,11 @@ void setup()
    // Attach servos to pins
    servoX.attach(SERVOX);
    servoY.attach(SERVOY);
-		
+    
    // Center the servos
    servoX.write(90);
    servoY.write(90);
-		
+    
    TickCounter=0;
 }
 
@@ -74,37 +79,54 @@ void loop()
    {
        TickCounter = 0;   // Counts up to a single second, then increase the RunTime
    }
-	
+  
    // Time the AUDIO
    if (TickCounter == TIM_SAMPLESTART)
    {
       mp3.playWithVolume(1,26);  // Play the first mp3 on the card at volume 26 (max is 30)
-      digitalWrite(RADAR, HIGH); // Sample plays? Then radar switch ON
+      
    }        
    if (TickCounter == TIM_SAMPLESTART+TIM_SAMPLELENGTH)
    {
        mp3.stopPlay(); // Stop playing after the show is over
        digitalWrite(RADAR, LOW); // Sample stops? Then headlights switch OFF
    }
-	
+
+   if (TickCounter == TIM_RADAR_ON)
+   {
+      digitalWrite(RADAR, HIGH); // Radar switch ON
+   } 
+   if (TickCounter == TIM_RADAR_OFF)
+   {
+      digitalWrite(RADAR, LOW); // Radar switch OFF
+   } 
+   if (TickCounter == TIM_GREEN_ON)
+   {
+      digitalWrite(GREENLIGHTS, HIGH); // Green leds switch ON
+   } 
+   if (TickCounter == TIM_GREEN_OFF)
+   {
+      digitalWrite(GREENLIGHTS, LOW); // Green leds switch OFF
+   } 
+  
    // Just a test for the servos every second
-   if (TickCounter == 100)
+   if (TickCounter == TIM_SERVOS_ON+100)
    {
       servoX.write(45);
    }
-   if (TickCounter == 200)
+   if (TickCounter == TIM_SERVOS_ON+300)
    {
       servoY.write(45);
    }
-   if (TickCounter == 300)
+   if (TickCounter == TIM_SERVOS_ON+500)
    {
       servoX.write(135);
    }
-   if (TickCounter == 400)
+   if (TickCounter == TIM_SERVOS_ON+700)
    {
       servoY.write(135);
    }
-   if (TickCounter == 500)
+   if (TickCounter == TIM_SERVOS_ON+900)
    {
       servoX.write(90);
       servoY.write(90);
