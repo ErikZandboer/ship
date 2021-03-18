@@ -19,7 +19,9 @@
 #define MP3_TX        7   // connect to RX of the MP3 player module
 #define MP3_RX        8
 #define GREENLIGHTS   12 
-#define RADAR         13
+#define RADAR         3
+
+#define RADAR_SPEED   50  // This value will be used to PWM the output to the radar motor to slow it down.
 
 // Define the servos
 Servo servoX;
@@ -102,11 +104,11 @@ void loop()
 
    if (TickCounter == TIM_RADAR_ON)
    {
-      digitalWrite(RADAR, HIGH); // Radar switch ON
+      analogWrite(RADAR, RADAR_SPEED); // Radar switch ON
    } 
    if (TickCounter == TIM_RADAR_OFF)
    {
-      digitalWrite(RADAR, LOW); // Radar switch OFF
+      analogWrite(RADAR, 0); // Radar switch OFF
    } 
    if (TickCounter == TIM_GREEN_ON)
    {
