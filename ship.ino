@@ -21,7 +21,9 @@
 #define GREENLIGHTS   12 
 #define RADAR         3
 
-#define RADAR_SPEED   50  // This value will be used to PWM the output to the radar motor to slow it down.
+#define RADAR_SPEED       50  // This value will be used to PWM the output to the radar motor to slow it down.
+#define RADAR_STARTSPEED  125 // This value is used for starting the radar motor
+#define MOTORDELAY        30  // delay in [ms] for starting the radar motor
 
 // Define the servos
 Servo servoX;
@@ -38,14 +40,12 @@ unsigned int    TickCounter=0;
 #define servoYmin 45
 #define servoYmax 135
 
-
-
 #define RUN_FREQ 100
 // Timings and things to change
 #define TIM_SAMPLESTART       20*RUN_FREQ        // 5 seconds
-#define TIM_SAMPLELENGTH      15*RUN_FREQ       // 61 seconds
+#define TIM_SAMPLELENGTH      15*RUN_FREQ        // 61 seconds
 #define TIM_RADAR_ON          1*RUN_FREQ
-#define TIM_RADAR_OFF        89*RUN_FREQ
+#define TIM_RADAR_OFF        100*RUN_FREQ        // 100 if larger than the REPEAT time, so radar should never switch off.
 #define TIM_GREEN_ON         20*RUN_FREQ
 #define TIM_GREEN_OFF        40*RUN_FREQ
 #define TIM_SERVOS_ON        26*RUN_FREQ
@@ -103,6 +103,10 @@ void loop()
    }
 
    if (TickCounter == TIM_RADAR_ON)
+   {
+      analogWrite(RADAR, RADAR_STARTSPEED); // Radar switch ON
+   }
+   if (TickCounter == (TIM_RADAR_ON + MOTORDELAY))
    {
       analogWrite(RADAR, RADAR_SPEED); // Radar switch ON
    } 
