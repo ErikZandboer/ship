@@ -23,7 +23,7 @@
 
 #define RADAR_SPEED       50  // This value will be used to PWM the output to the radar motor to slow it down.
 #define RADAR_STARTSPEED  125 // This value is used for starting the radar motor
-#define MOTORDELAY        30  // delay in [ms] for starting the radar motor
+#define MOTORDELAY        30  // delay in tenths of [ms] for starting the radar motor, so 100 = 1 second, 25 = 0.25 seconds
 
 // Define the servos
 Servo servoX;
