@@ -35,6 +35,9 @@ MP3 mp3(MP3_RX, MP3_TX);
 // Get some base counters in for the runtime in seconds.
 unsigned int    TickCounter=0;
 
+// State for the radar
+unsigned char RadarRunning=0;
+
 #define servoXmin 45
 #define servoXmax 135
 #define servoYmin 45
@@ -58,7 +61,8 @@ void setup()
 {
    digitalWrite(GREENLIGHTS, LOW);     // GREEN lights start OFF
    digitalWrite(RADAR, LOW);    // Radar starts OFF   
-  
+   RadarRunning = 0;
+   
    // All led groups as OUTPUT
    pinMode (GREENLIGHTS, OUTPUT);
    pinMode (RADAR, OUTPUT);
@@ -102,17 +106,19 @@ void loop()
        mp3.stopPlay(); // Stop playing after the show is over
    }
 
-   if (TickCounter == TIM_RADAR_ON)
+   if ((TickCounter == TIM_RADAR_ON) && (RadarRunning == 0))
    {
       analogWrite(RADAR, RADAR_STARTSPEED); // Radar switch ON
+      RadarRunning = 1
    }
    if (TickCounter == (TIM_RADAR_ON + MOTORDELAY))
    {
-      analogWrite(RADAR, RADAR_SPEED); // Radar switch ON
+      analogWrite(RADAR, RADAR_SPEED); // Radar running
    } 
    if (TickCounter == TIM_RADAR_OFF)
    {
       analogWrite(RADAR, 0); // Radar switch OFF
+      RadarRunning = 0;
    } 
    if (TickCounter == TIM_GREEN_ON)
    {
