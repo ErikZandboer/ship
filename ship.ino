@@ -67,14 +67,6 @@ void setup()
    pinMode (GREENLIGHTS, OUTPUT);
    pinMode (RADAR, OUTPUT);
         
-   // Attach servos to pins
-   servoX.attach(SERVOX);
-   servoY.attach(SERVOY);
-    
-   // Center the servos
-   servoX.write(90);
-   servoY.write(90);
-
    // Get a random seeding by reading analog pin 0 (leave disconnected!)
    randomSeed(analogRead(0));
    
@@ -128,15 +120,27 @@ void loop()
    {
       digitalWrite(GREENLIGHTS, LOW); // Green leds switch OFF
    } 
-  
+
+   if (TickCounter == TIM_SERVOS_ON)
+   {
+      servoX.attach(SERVOX);
+      servoY.attach(SERVOY);
+   }
+
    // Within this timeframe the servo's are allowed to move each second. X moves on the second, Y moves on every half-a-second
-   if ( (TickCounter >= TIM_SERVOS_ON) && (TickCounter <= TIM_SERVOS_OFF) && ((TickCounter %100) ==0) )
+   if ( (TickCounter >= TIM_SERVOS_ON) && (TickCounter < TIM_SERVOS_OFF) && ((TickCounter %100) ==0) )
    {
       servoX.write((unsigned char)random(servoXmin,servoXmax));
    }
-   if ( (TickCounter >= TIM_SERVOS_ON) && (TickCounter <= TIM_SERVOS_OFF) && ((TickCounter %100) ==50) )
+   if ( (TickCounter >= TIM_SERVOS_ON) && (TickCounter < TIM_SERVOS_OFF) && ((TickCounter %100) ==50) )
    {
       servoY.write((unsigned char)random(servoYmin,servoYmax));
+   }
+
+   if (TickCounter == TIM_SERVOS_OFF)
+   {
+      servoX.detach();
+      servoY.detach();
    }
 
    delay(1); // Added this dummy delay() to make sure the code takes more than 1 ms to execute.
