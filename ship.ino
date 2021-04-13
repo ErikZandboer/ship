@@ -109,7 +109,7 @@ void loop()
    if ((TickCounter == TIM_RADAR_ON) && (RadarRunning == 0))
    {
       analogWrite(RADAR, RADAR_STARTSPEED); // Radar switch ON
-      RadarRunning = 1
+      RadarRunning = 1;
    }
    if (TickCounter == (TIM_RADAR_ON + MOTORDELAY))
    {
